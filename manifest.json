@@ -1,0 +1,33 @@
+
+{
+  "short_name": "Student Records",
+  "name": "Student Record Management System",
+  "description": "High-performance student record management system with Gemini-powered insights.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3413/3413535.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3413/3413535.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "minimal-ui"],
+  "orientation": "portrait",
+  "theme_color": "#4f46e5",
+  "background_color": "#ffffff",
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Records",
+      "url": "./index.html?tab=records",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3413/3413535.png", "sizes": "192x192" }]
+    }
+  ]
+}
