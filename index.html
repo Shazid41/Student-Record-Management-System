@@ -54,18 +54,23 @@
       // Global error listener to catch load failures
       window.onerror = function(msg, url, line, col, error) {
         const display = document.getElementById('error-display');
-        if (display) display.innerText = 'App Error: ' + msg;
+        if (display) display.innerText = 'System Error: ' + msg;
+        console.error('Boot Error:', msg, error);
         return false;
       };
       
-      // Safer Service Worker registration
+      // Safer Service Worker registration with origin check
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Check if we are in a valid origin for SW (prevents origin mismatch errors in previews)
-          if (window.location.protocol === 'https:' || window.location.hostname === 'localhost') {
+          const isGooglePreview = window.location.hostname.includes('usercontent.goog');
+          const isNetlify = window.location.hostname.includes('netlify.app');
+          
+          if (isNetlify || window.location.hostname === 'localhost') {
             navigator.serviceWorker.register('./sw.js')
               .then(reg => console.log('Offline SW registered'))
-              .catch(err => console.warn('SW registration bypassed for environment:', err.message));
+              .catch(err => console.warn('SW registration bypassed:', err.message));
+          } else if (isGooglePreview) {
+            console.log('SW registration skipped for preview sandbox compatibility.');
           }
         });
       }
