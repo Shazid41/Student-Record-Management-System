@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'student-records-v5';
+const CACHE_NAME = 'student-records-v6-stable';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
