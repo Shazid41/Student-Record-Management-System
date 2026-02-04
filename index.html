@@ -27,7 +27,20 @@
         .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #root:empty { background: #fdfbff; height: 100vh; width: 100vw; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #64748b; font-size: 14px; text-align: center; padding: 20px; }
-        .error-msg { color: #ef4444; font-weight: bold; margin-top: 10px; font-family: monospace; font-size: 12px; }
+        .error-msg { 
+            color: #ef4444; 
+            font-weight: bold; 
+            margin-top: 15px; 
+            font-family: monospace; 
+            font-size: 12px; 
+            background: #fef2f2; 
+            padding: 10px; 
+            border-radius: 8px;
+            border: 1px solid #fee2e2;
+            max-width: 90%;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
     </style>
 <script type="importmap">
 {
@@ -35,7 +48,7 @@
     "react": "https://esm.sh/react@19.0.0",
     "react-dom": "https://esm.sh/react-dom@19.0.0",
     "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+    "recharts": "https://esm.sh/recharts@2.13.0?external=react,react-dom",
     "@google/genai": "https://esm.sh/@google/genai@1.39.0",
     "xlsx": "https://esm.sh/xlsx@0.18.5",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
@@ -46,31 +59,44 @@
 </head>
 <body>
     <div id="root">
-      <div>Initializing System...</div>
-      <div id="error-display" class="error-msg"></div>
+      <div class="flex flex-col items-center">
+        <div class="animate-pulse text-indigo-600 font-bold mb-2">SYSTEM LOADING</div>
+        <div class="text-slate-400 text-xs tracking-widest uppercase">Initializing Core Modules...</div>
+        <div id="error-display" class="error-msg" style="display: none;"></div>
+      </div>
     </div>
     <script type="module" src="./index.tsx"></script>
     <script>
-      // Global error listener to catch load failures
+      // Enhanced Global error listener
       window.onerror = function(msg, url, line, col, error) {
         const display = document.getElementById('error-display');
-        if (display) display.innerText = 'System Error: ' + msg;
-        console.error('Boot Error:', msg, error);
+        if (display) {
+          display.style.display = 'block';
+          display.innerText = 'Runtime Error: ' + msg + '\nLocation: ' + (url ? url.split('/').pop() : 'unknown') + ':' + line;
+        }
         return false;
       };
+
+      // Module load error tracking
+      window.addEventListener('error', function(e) {
+        if (e.target.tagName === 'SCRIPT') {
+          const display = document.getElementById('error-display');
+          if (display) {
+            display.style.display = 'block';
+            display.innerText = 'Module Load Failed: ' + e.target.src;
+          }
+        }
+      }, true);
       
-      // Safer Service Worker registration with origin check
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          const isGooglePreview = window.location.hostname.includes('usercontent.goog');
-          const isNetlify = window.location.hostname.includes('netlify.app');
+          const isNetlify = window.location.hostname.endsWith('netlify.app');
+          const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
           
-          if (isNetlify || window.location.hostname === 'localhost') {
+          if (isNetlify || isLocal) {
             navigator.serviceWorker.register('./sw.js')
               .then(reg => console.log('Offline SW registered'))
-              .catch(err => console.warn('SW registration bypassed:', err.message));
-          } else if (isGooglePreview) {
-            console.log('SW registration skipped for preview sandbox compatibility.');
+              .catch(err => console.warn('SW registration skipped:', err.message));
           }
         });
       }

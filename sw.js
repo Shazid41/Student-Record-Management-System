@@ -1,12 +1,12 @@
 
-const CACHE_NAME = 'student-records-v8-stable';
+const CACHE_NAME = 'student-records-v9-stable';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-  'https://esm.sh/recharts@2.12.7?external=react,react-dom',
+  'https://esm.sh/recharts@2.13.0?external=react,react-dom',
   'https://esm.sh/react@19.0.0',
   'https://esm.sh/react-dom@19.0.0',
   'https://esm.sh/@google/genai@1.39.0',
