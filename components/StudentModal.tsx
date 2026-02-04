@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Student, StudentFormData } from '../types';
+import { Student, StudentFormData } from '../types.ts';
 import { DEPARTMENTS } from '../constants.tsx';
 
 interface StudentModalProps {
@@ -44,7 +44,6 @@ const StudentModal: React.FC<StudentModalProps> = ({ isOpen, onClose, onSubmit, 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
-    onClose();
   };
 
   return (

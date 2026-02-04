@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Student, StudentFormData, DashboardStats } from './types';
-import { storageService } from './services/storageService';
-import { geminiService } from './services/geminiService';
-import StudentModal from './components/StudentModal';
+import { Student, StudentFormData, DashboardStats } from './types.ts';
+import { storageService } from './services/storageService.ts';
+import { geminiService } from './services/geminiService.ts';
+import StudentModal from './components/StudentModal.tsx';
 import { DEPARTMENTS } from './constants.tsx';
 import { 
   BarChart, 
@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   const triggerHaptic = (type: 'light' | 'medium' | 'heavy' = 'light') => {
-    if ('vibrate' in navigator) {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       const patterns = { light: 10, medium: 30, heavy: 60 };
       navigator.vibrate(patterns[type]);
     }
@@ -67,10 +67,11 @@ const App: React.FC = () => {
       setStudents(prev => [...prev, newStudent]);
     }
     setEditingStudent(null);
+    setIsModalOpen(false);
   };
 
   const deleteStudent = (id: string) => {
-    if (confirm("Permanently delete this record?")) {
+    if (window.confirm("Permanently delete this record?")) {
       triggerHaptic('heavy');
       storageService.deleteStudent(id);
       setStudents(prev => prev.filter(s => s.id !== id));
@@ -83,9 +84,9 @@ const App: React.FC = () => {
         const imported = await storageService.importData(e.target.files[0]);
         setStudents(imported);
         triggerHaptic('medium');
-        alert('Database Synchronized via Excel!');
+        window.alert('Database Synchronized via Excel!');
       } catch (err) {
-        alert(err);
+        window.alert(err);
       }
     }
   };
@@ -163,7 +164,7 @@ const App: React.FC = () => {
 
             <div className="space-y-3">
               {students.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.rollNumber.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
-                <div key={s.id} className="bg-white p-5 rounded-[28px] border border-slate-50 flex items-center justify-between active:scale-[0.98] transition-all shadow-sm">
+                <div key={s.id} onClick={() => { setEditingStudent(s); setIsModalOpen(true); }} className="bg-white p-5 rounded-[28px] border border-slate-50 flex items-center justify-between active:scale-[0.98] transition-all shadow-sm cursor-pointer">
                   <div className="flex items-center gap-4">
                     <div className="w-11 h-11 bg-slate-50 rounded-2xl flex items-center justify-center text-indigo-600 font-black text-sm uppercase">
                       {s.name.charAt(0)}
@@ -178,7 +179,7 @@ const App: React.FC = () => {
                       <p className="text-xs font-black text-indigo-600 leading-none">{s.gpa.toFixed(2)}</p>
                       <span className="text-[8px] font-black text-indigo-400 uppercase">GPA</span>
                     </div>
-                    <button onClick={() => deleteStudent(s.id)} className="p-2 text-rose-300 hover:text-rose-500 active:scale-90 transition-transform">
+                    <button onClick={(e) => { e.stopPropagation(); deleteStudent(s.id); }} className="p-2 text-rose-300 hover:text-rose-500 active:scale-90 transition-transform">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
                     </button>
                   </div>

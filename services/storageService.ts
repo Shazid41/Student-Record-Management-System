@@ -1,5 +1,5 @@
 
-import { Student } from '../types';
+import { Student } from '../types.ts';
 import * as XLSX from 'xlsx';
 
 const STORAGE_KEY = 'student_record_mgmt_db_v2';

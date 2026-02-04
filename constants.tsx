@@ -1,6 +1,4 @@
 
-import React from 'react';
-
 export const DEPARTMENTS = [
   'Computer Science',
   'Mechanical Engineering',
